@@ -6,14 +6,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Only POST requests are allowed" });
   }
 
-  // Set CORS headers
+  // Set CORS headers for preflight requests and actual POST requests
   res.setHeader("Access-Control-Allow-Origin", "*");  // You can restrict this to specific domains in production
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   // Handle OPTIONS request (preflight)
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    return res.status(200).end();  // Preflight request: respond with status 200
   }
 
   // Extract data from the request body
