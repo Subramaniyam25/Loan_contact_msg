@@ -6,24 +6,25 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Only POST requests are allowed" });
   }
 
-  // Set CORS headers if needed (safe to keep for local frontend testing)
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  // Set CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");  // You can restrict this to specific domains in production
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+  // Handle OPTIONS request (preflight)
   if (req.method === "OPTIONS") {
-    return res.status(200).end(); // Preflight check
+    return res.status(200).end();
   }
 
-  // Extract data
+  // Extract data from the request body
   const { name, email, query } = req.body.contactmsg;
 
   // Configure the mail transporter
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'subramaniyamsvss@gmail.com',
-      pass: 'fqkz oibw gxjr whyd' // ⚠️ Use environment variable in production!
+      user: process.env.EMAIL_USER,  // Use environment variables for security
+      pass: process.env.EMAIL_PASS   // Use environment variables for security
     }
   });
 
@@ -53,8 +54,8 @@ export default async function handler(req, res) {
   `;
 
   const mailOptions = {
-    from: 'subramaniyamsvss@gmail.com',
-    to: 'valarshan2000@gmail.com',
+    from: process.env.EMAIL_USER,   // Use environment variables for security
+    to: 'valarshan2000@gmail.com',  // You can set this dynamically if needed
     subject: 'Client Query',
     html: emailContent
   };
